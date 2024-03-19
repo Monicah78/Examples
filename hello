@@ -1,0 +1,109 @@
+const readline = require('readline');
+
+// Create interface for terminal input/output
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+// Initialize contacts array
+let contacts = [];
+
+// Function to add a contact
+function addContact(name, email, phone) {
+  contacts.push({ name, email, phone });
+  console.log(`Contact ${name} added successfully!`);
+}
+
+// Function to search for a contact
+function searchContact(name) {
+  const contact = contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase());
+  if (contact) {
+    console.log(`Contact Found: ${JSON.stringify(contact)}`);
+  } else {
+    console.log('Contact not found.');
+  }
+}
+
+// Function to update a contact
+function updateContact(name, email, phone) {
+  const index = contacts.findIndex(contact => contact.name.toLowerCase() === name.toLowerCase());
+  if (index !== -1) {
+    contacts[index] = { name, email, phone };
+    console.log(`Contact ${name} updated successfully!`);
+  } else {
+    console.log('Contact not found.');
+  }
+}
+
+// Function to delete a contact
+function deleteContact(name) {
+  const index = contacts.findIndex(contact => contact.name.toLowerCase() === name.toLowerCase());
+  if (index !== -1) {
+    contacts.splice(index, 1);
+    console.log(`Contact ${name} deleted successfully!`);
+  } else {
+    console.log('Contact not found.');
+  }
+}
+
+// Function to display all contacts
+function displayContacts() {
+  console.log('All Contacts:');
+  contacts.forEach(contact => console.log(contact));
+}
+
+// Function to handle user input
+function handleInput() {
+  rl.question('Enter command (add/search/update/delete/display/exit): ', command => {
+    switch (command.toLowerCase()) {
+      case 'add':
+        rl.question('Enter name: ', name => {
+          rl.question('Enter email: ', email => {
+            rl.question('Enter phone: ', phone => {
+              addContact(name, email, phone);
+              handleInput();
+            });
+          });
+        });
+        break;
+      case 'search':
+        rl.question('Enter name: ', name => {
+          searchContact(name);
+          handleInput();
+        });
+        break;
+      case 'update':
+        rl.question('Enter name: ', name => {
+          rl.question('Enter new email: ', email => {
+            rl.question('Enter new phone: ', phone => {
+              updateContact(name, email, phone);
+              handleInput();
+            });
+          });
+        });
+        break;
+      case 'delete':
+        rl.question('Enter name: ', name => {
+          deleteContact(name);
+          handleInput();
+        });
+        break;
+      case 'display':
+        displayContacts();
+        handleInput();
+        break;
+      case 'exit':
+        console.log('Exiting...');
+        rl.close();
+        break;
+      default:
+        console.log('Invalid command.');
+        handleInput();
+        break;
+    }
+  });
+}
+
+// Start the application
+
